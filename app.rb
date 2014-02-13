@@ -33,5 +33,6 @@ get '/step2' do
 
 	@client = OAuth2::Client.new(CLIENT_ID, CLIENT_SECRET, :site => PROVIDER_SITE, :authorize_url => AUTHORIZE_URL, :token_url => TOKEN_URL)
 
+	@token = @client.auth_code.get_token(@code)
 	erb "<p>temporary code: <%= @code %></p><p>Token: <%= @token.token %></p>"
 end
