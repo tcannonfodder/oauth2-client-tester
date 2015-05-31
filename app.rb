@@ -1,6 +1,6 @@
 require 'rubygems'; require 'bundler'; Bundler.require
 
-require 'ruby-debug'
+require 'byebug'
 require 'faraday'
 
 dir = File.expand_path('..', __FILE__)
