@@ -3,18 +3,17 @@ require 'rubygems'; require 'bundler'; Bundler.require
 require 'byebug'
 require 'faraday'
 
-dir = File.expand_path('..', __FILE__)
-require dir + '/config'
+require_relative 'config'
 
 get '/' do
 	erb :index
 end
 
 get '/step1' do
-	@client = OAuth2::Client.new(CLIENT_ID, CLIENT_SECRET, :site => PROVIDER_SITE, :authorize_url => AUTHORIZE_URL, :token_url => TOKEN_URL)
+	@client = OAuth2::Client.new(ENV.fetch("CLIENT_ID"), ENV.fetch("CLIENT_SECRET"), site: ENV.fetch("PROVIDER_SITE"), authorize_url: ENV.fetch("AUTHORIZE_URL"), token_url: ENV.fetch("TOKEN_URL"))
 	redirect @client.auth_code.authorize_url(
-		:redirect_uri => "http://localhost:4567/step2?ridic=ulous",
-		:state => "herpderp"
+		redirect_uri: ENV.fetch("REDIRECT_URI"),
+		state: "test1234"
 	)
 end
 
@@ -35,9 +34,9 @@ get '/step2' do
 
 	# Rack::Utils.parse_query(response.body)
 
-	@client = OAuth2::Client.new(CLIENT_ID, CLIENT_SECRET, :site => PROVIDER_SITE, :authorize_url => AUTHORIZE_URL, :token_url => TOKEN_URL)
+	@client = OAuth2::Client.new(ENV.fetch("CLIENT_ID"), ENV.fetch("CLIENT_SECRET"), site: ENV.fetch("PROVIDER_SITE"), authorize_url: ENV.fetch("AUTHORIZE_URL"), token_url: ENV.fetch("TOKEN_URL"))
 
-	@token = @client.auth_code.get_token(@code, :redirect_uri => "http://localhost:4567/step2?ridic=ulous")
+	@token = @client.auth_code.get_token(@code, redirect_uri: ENV.fetch("REDIRECT_URI"))
 
 	logger.info @token.to_hash
 
